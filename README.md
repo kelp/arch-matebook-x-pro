@@ -75,7 +75,9 @@ This install will use full disk encryption, with the exception of the EFI
 boot partition. 
 
 Wipe the drive following the [dm-crypt Drive Wipe instructions](https://wiki.archlinux.org/index.php/Dm-crypt/Drive_preparation#dm-crypt_wipe_on_an_empty_disk_or_partition)
+
 `# cryptsetup open --type plain -d /dev/urandom /dev/nvme0n1 to_be_wiped`
+
 Verify that the new device exists:
 
 `$ lsblk`
@@ -341,7 +343,7 @@ Redshift configs come from https://github.com/kelp/redshift
 
 Install Nerd Fonts Complete, these are used by my terminal, required for my nvim and shell config
 
-`yay nerd-fonts-complete`
+`$ yay nerd-fonts-complete`
 
 Fix sound
 
@@ -365,12 +367,15 @@ Set it up with the PAM method for console. LightDM should handle it for X11
 https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method
 
 Screen locking with Google's
+
 `$ yay xsecurelock`
 
 Install xbacklight
+
 `# pacman -S xorg-xbacklight`
 
 Install xscreensaver
+
 `# pacman -S xscreensaver`
 
 Set a readable console font:
@@ -427,11 +432,11 @@ EndSection
 ```
 
 TODO
-https://wiki.archlinux.org/index.php/Microcode#systemd-boot
-https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
-https://bentley.link/secureboot/
-https://wiki.archlinux.org/index.php/Secure_Boot
-https://wiki.archlinux.org/index.php/HiDPI
+* https://wiki.archlinux.org/index.php/Microcode#systemd-boot
+* https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+* https://bentley.link/secureboot/
+* https://wiki.archlinux.org/index.php/Secure_Boot
+* https://wiki.archlinux.org/index.php/HiDPI
 * Setup Power management
 * Setup Sound
 * Fix sound
