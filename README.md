@@ -212,6 +212,7 @@ pacman -S i3 nvidia xorg-server xorg-font-util xorg-fonts-75dpi xorg-fonts-100dp
 Install Bumblebee and enable it
 ```
 # pacman -S bumblebee
+# pacman -S bbswitch
 # systemctl enable bumblebeed.service
 # gpasswd -a $USER bumblebee
 ```
@@ -228,7 +229,11 @@ Install and setup etckeeper
 Enable TLP for powersaving
 ```
 # pacman -S tlp tlp-rdw
-# < finish adding commands
+# systemctl enable tlp.service
+# systemctl enable tlp-sleep.service
+# systemctl mask systemd-rfkill.service
+# systemctl mask systemd-rfkill.socket
+# systemctl enable NetworkManager-dispatcher.service
 ```
 
 Get X11 running
@@ -262,16 +267,114 @@ pacman -S python3
 
 Install my homshick setup, bootstrap of oh-my-zsh needs some automation.
 
+Install YaY to build packages from  Arch AUR
+```$ git clone https://aur.archlinux.org/yay.git
+$ cd yay
+$ makepkg -si
+```
+
+Install things needed for my custom i3 setup
+```
+$ yay bumblebee-status
+# pacman -S dmenu
+# pacman -S feh
+# pacman -S pacman-contrib
+```
+
+A few more things to make X happy.
+```
+# pacman -S xss-lock compton redshift
+```
+Redshift configs come from https://github.com/kelp/redshift 
+
+Install Nerd Fonts Complete, these are used by my terminal, required for my nvim and shell config
+`yay nerd-fonts-complete`
+
+Fix sound
+`# pacman -S alsa-tools`
+Follow instructions at the bottom of this:
+https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+
+Sort the pacman mirrors
+https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors
+
+Update systemd-book when systemd is upgraded. From:
+https://wiki.archlinux.org/index.php/Systemd-boot#Automatic_update
+`$ yay systemd-boot-pacman-hook`
+
+Install gnome-keyring to manage ssh keys
+`# pacman -S gnome-keyring`
+
+Set it up with the PAM method for console. LightDM should handle it for X11
+https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method
+
+Screen locking with Google's
+`$ yay xsecurelock`
+
+Install xbacklight
+`# pacman -S xorg-xbacklight`
+
+Install xscreensaver
+`# pacman -S xscreensaver`
+
+Set a readable console font:
+`# pacman -S terminus-font`
+Create `/etc/vconso-e.conf` with contents:
+
+`FONT=ter-132n`
+
+Then add 'consolefont' to the HOOKS section of /etc/mkinitcpio.conf and run:
+`# mkinitcpio -p linux`
+
+From: https://wiki.archlinux.org/index.php/Laptop#Touchpad
+Hibernate on low battery to '/etc/udev/rules.d/99-lowbat.rules'
+```# Suspend the system when battery level drops to 5% or lower
+SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
+
+```
+Setup time sync
+https://wiki.archlinux.org/index.php/Systemd-timesyncd
+Edit /etc/timesyncd.conf uncomment these lines:
+```
+NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
+FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org
+```
+Then start it:
+`# timedatectl set-ntp true `
+
+Enable macOS like touch pad scrolling, create:
+`/etc/X11/xorg.conf.d/30-touchpad.conf`
+```
+Section "InputClass"
+    Identifier "touchpad"
+    Driver "libinput"
+    MatchIsTouchpad "on"
+    Option "NaturalScrolling" "true"
+EndSection
+```
+Disable the Touch Screen (why would anyone want that?!)
+Create: `/etc/X11/xorg.conf.d`
+With contents:
+```
+Section "InputClass"
+    Identifier         "Touchscreen catchall"
+    MatchIsTouchscreen "on"
+
+    Option "Ignore" "on"
+EndSection
+```
+
 TODO
 https://wiki.archlinux.org/index.php/Network_configuration#Network_managers
 https://wiki.archlinux.org/index.php/Microcode#systemd-boot
 https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
 https://bentley.link/secureboot/
 https://wiki.archlinux.org/index.php/Secure_Boot
-https://wiki.archlinux.org/index.php/Systemd-boot#Automatic_update
-* Setup X11
 * Setup Power management
 * Setup Sound
 * Install binary nvidia drivers
 * Increase the size of the console font
 * Make WiFi work after reboot and auto-connect to known networks.
+* Fix sound
+* Make screen brightness and volume keys work
+* Fix firefox screentearing
