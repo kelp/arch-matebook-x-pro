@@ -197,6 +197,70 @@ with:
 ## Intel Microcode Updates
 `# pacman -S intel-ucode`
 
+# Install various packages
+
+Needed for wifi-menu
+```
+pacman -S dialog
+pacman -S wpa_supplicant
+```
+Install some X11 related things, and the i3 window manager
+```
+pacman -S i3 nvidia xorg-server xorg-font-util xorg-fonts-75dpi xorg-fonts-100dpi xorg-mkfontdir xorg-mkfontscale xorg-xdpyinfo xorg-xrandr xorg-xset'
+```
+
+Install Bumblebee and enable it
+```
+# pacman -S bumblebee
+# systemctl enable bumblebeed.service
+# gpasswd -a $USER bumblebee
+```
+TODO config bumblebee
+
+Install and setup etckeeper
+```
+# pacman -S etckeeper
+# cd /etc
+# etckeeper init
+# etckeeper commit
+```
+
+Enable TLP for powersaving
+```
+# pacman -S tlp tlp-rdw
+# < finish adding commands
+```
+
+Get X11 running
+```
+# pacman -S lightdm
+# pacman -S lightdm-gtk-greeter
+# pacman -S termite
+# pacman -S firefox
+# pacman -S mesa
+# pacman -S xf86-video-intel
+```
+
+Get the Network to come up automatically
+```
+# nmcli device wifi connect <Network> password <password>
+# pacman -S network-manager-applet
+```
+
+Install git and ssh so I can update this README frmo the MateBook
+```
+pacman -S git'
+pacman -S openssh'
+```
+
+pacman -S nvim
+pacman -S neovim
+pacman -S zsh
+
+My Nvim Config requires this
+pacman -S python3
+
+Install my homshick setup, bootstrap of oh-my-zsh needs some automation.
 
 TODO
 https://wiki.archlinux.org/index.php/Network_configuration#Network_managers
