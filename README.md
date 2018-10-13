@@ -365,16 +365,16 @@ EndSection
 ```
 
 TODO
-https://wiki.archlinux.org/index.php/Network_configuration#Network_managers
 https://wiki.archlinux.org/index.php/Microcode#systemd-boot
 https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
 https://bentley.link/secureboot/
 https://wiki.archlinux.org/index.php/Secure_Boot
+https://wiki.archlinux.org/index.php/HiDPI
 * Setup Power management
 * Setup Sound
-* Install binary nvidia drivers
-* Increase the size of the console font
-* Make WiFi work after reboot and auto-connect to known networks.
 * Fix sound
 * Make screen brightness and volume keys work
 * Fix firefox screentearing
+* Setup slick-greeter for lightdm
+* Setup background that fits with screen resolution
+* Setup boot splash screen with arch logo
