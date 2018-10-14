@@ -340,9 +340,9 @@ $ yay bumblebee-status
 ```
 
 A few more things to make X happy.
-```
-# pacman -S xss-lock compton redshift
-```
+
+`# pacman -S xss-lock compton redshift`
+
 Redshift configs come from https://github.com/kelp/redshift 
 
 Install Nerd Fonts Complete, these are used by my terminal, required for my nvim and shell config
@@ -509,12 +509,16 @@ Run mkinitcpio
 
 `# mkinitcpio -p linux`
 
-
+Get sound working
+```
+# pacman -S alas-utils pulseaudio pulseaudio-alsa
+```
 
 Other packages I install:
 ```
 bc
 unzip
+mlocate
 ```
 
 TODO
@@ -523,11 +527,9 @@ TODO
 * https://bentley.link/secureboot/
 * https://wiki.archlinux.org/index.php/Secure_Boot
 * https://wiki.archlinux.org/index.php/HiDPI
-* Setup Power management
-* Setup Sound
-* Fix sound
 * Make screen brightness and volume keys work
-* Fix firefox screentearing
-* Setup slick-greeter for lightdm
-* Setup background that fits with screen resolution
 * Setup boot splash screen with arch logo
+* Switch to refind boot loader with a nice them
+* Make plymouth and slickgreeter have the same background for a consistent 
+  boot experience
+* Make volume change work with bumbleeb-status or something
