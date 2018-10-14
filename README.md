@@ -285,6 +285,10 @@ Enable TLP for powersaving
 # systemctl enable NetworkManager-dispatcher.service
 ```
 
+Install ethtool and smartmontools at the suggestion of tlp-stat
+
+`sudo pacman -S ethtool smartmontools`
+
 Get X11 running
 ```
 # pacman -S lightdm
@@ -297,7 +301,7 @@ Get X11 running
 
 Get the Network to come up automatically
 ```
-# nmcli device wifi connect <Network> password <password>
+$ nmcli device wifi connect <Network> password <password>
 # pacman -S network-manager-applet
 ```
 
@@ -348,6 +352,7 @@ Install Nerd Fonts Complete, these are used by my terminal, required for my nvim
 Fix sound
 
 `# pacman -S alsa-tools`
+
 Follow instructions at the bottom of this:
 https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
 
@@ -407,7 +412,9 @@ Then start it:
 
 `# timedatectl set-ntp true `
 
-Enable macOS like touch pad scrolling, create:
+Enable macOS like touch pad scrolling, tap to click (still debating if I want
+that) and two finger click for right click, three finger click for middle
+click / paste.
 
 `/etc/X11/xorg.conf.d/30-touchpad.conf`
 ```
@@ -416,6 +423,10 @@ Section "InputClass"
     Driver "libinput"
     MatchIsTouchpad "on"
     Option "NaturalScrolling" "true"
+    Option "Tapping" "on"
+    Option "AccelSpeed" "0.1"
+    Option "AccelProfile" "adaptive"
+    Option "ClickMethod" "clickfinger"
 EndSection
 ```
 
@@ -429,6 +440,66 @@ Section "InputClass"
 
     Option "Ignore" "on"
 EndSection
+```
+
+Install lightdm-slick-greeter and lightdm-settings
+
+`$ yay lightdm-slick-greeter lightdm-settings`
+
+LightDM config:
+```
+[Seat:*]
+greeter-session=lightdm-slick-greeter
+```
+
+Slick Greeter Config:
+```
+[Greeter]
+background=/etc/lightdm/images/arch-2560x1600.png 
+```
+
+Setup Plymouth
+Following instructions from: https://wiki.archlinux.org/index.php/plymouth
+
+`$ yay plymouth` Select plymouth and plymouth-theme-arch-breeze-git
+
+Set the theme in /etc/plymouth/plymouthd.conf
+
+```
+[Daemon]
+Theme=arch-breeze
+ShowDelay=5
+DeviceTimeout=5
+```
+
+Disable lightdm systemd unit and enable the lightdm-plymouth unit.
+
+```
+# systemctl disable lightdm.service
+# systemctl enable lightdm-plymouth.service
+```
+
+Install ttf-dejavu fonts, Plymouth needs this, mkinitcpio will fail without it
+`$ pacman -S ttf-dejavu`
+
+Add Plymouth requirements to /etc/mkinitcpio.conf. The plymouth-encrypt
+is required when running disk encryption. I couldn't boot the first time through
+because I missed that.
+
+```
+MODULES=(i915 ext4)
+...
+HOOKS=(base udev plymouth autodetect consolefont modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
+```
+
+Run mkinitcpio
+
+`# mkinitcpio -p linux`
+
+Other packages I install:
+```
+bc
+unzip
 ```
 
 TODO
