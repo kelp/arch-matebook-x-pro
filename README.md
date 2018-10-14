@@ -455,8 +455,21 @@ greeter-session=lightdm-slick-greeter
 Slick Greeter Config:
 ```
 [Greeter]
-background=/etc/lightdm/images/arch-2560x1600.png 
+background = /usr/share/slick-greeter/arch-2560x1600.png
+show-hostname = true
+show-power = true
+show-click = true
+show-quit = true
+show-a11y = false
+draw-grid = false
+show-keyboard= false
+draw-user-backgrounds = false
 ```
+
+Make the 'Dynamic User' stop showing up on the login screen, by updating
+/etc/lightdm/users.conf to exclude users with /sbin/nologin as their shell
+
+`hidden-shells=/bin/false /usr/bin/nologin /sbin/nologin`
 
 Setup Plymouth
 Following instructions from: https://wiki.archlinux.org/index.php/plymouth
@@ -495,6 +508,8 @@ HOOKS=(base udev plymouth autodetect consolefont modconf block plymouth-encrypt 
 Run mkinitcpio
 
 `# mkinitcpio -p linux`
+
+
 
 Other packages I install:
 ```
