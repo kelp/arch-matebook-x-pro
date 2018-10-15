@@ -522,9 +522,12 @@ First I installed these packages
 
 
 Follow instructions at the bottom of this
+
 https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+
 But I also referenced these:
 https://imgur.com/a/N1xsCVZ
+
 https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/
 
 I ended up having to run `hdajackretask` as root from a terminal to get it
