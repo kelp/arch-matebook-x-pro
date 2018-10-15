@@ -337,6 +337,7 @@ $ yay bumblebee-status
 # pacman -S dmenu
 # pacman -S feh
 # pacman -S pacman-contrib
+# pacman -S python-dbus
 ```
 
 A few more things to make X happy.
@@ -349,66 +350,8 @@ Install Nerd Fonts Complete, these are used by my terminal, required for my nvim
 
 `$ yay nerd-fonts-complete`
 
-Fix sound, this took some experimenting. I installed these packages
 
-`# pacman -S alsa-tools pavucontrol pulsemixer`
-
-Follow instructions at the bottom of this
-https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
-But I also referenced these:
-https://imgur.com/a/N1xsCVZ
-https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/
-
-I ended up having to run `hdajackretask` as root from a terminal to get it
-to apply the configs properly. It creates `hda-jack-retask.conf`
-and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set Connectivity
-to Internal for both pins.  Once I did that, and rebooted, I was able
-to run puvacontrol and chose 'Analog Surround 4.0 Output' from the
-Configuration tab. And then on the Output Devices tab, I could unlock
-channels and verify that all 4 speakers were working, and control volume
-for each.
-
-Make volume and screen brightness buttons work. Info from:
-https://wiki.archlinux.org/index.php/Xbindkeys
-
-```
-# pacman -S xbindkeys
-$ xbindkeys -d > ~/.xbindkeysrc
-```
-Add these to .xbindkeysrc:
-```
-# Increase volume
-"pactl set-sink-volume @DEFAULT_SINK@ +1000"
-   XF86AudioRaiseVolume
-
-# Decrease volume
-"pactl set-sink-volume @DEFAULT_SINK@ -1000"
-   XF86AudioLowerVolume
-
-# Mute volume
-"pactl set-sink-mute @DEFAULT_SINK@ toggle"
-   XF86AudioMute
-
-# Increase backlight
-"xbacklight -inc 10"
-   XF86MonBrightnessUp
-
-# Decrease backlight
-"xbacklight -dec 10"
-   XF86MonBrightnessDown
-```
-
-Make backlight changes work, create `/etc/X11/xorg.conf.d/20-intel.conf`
-with contents:
-```
-Section "Device"
-    Identifier  "Card0"
-    Driver      "intel"
-    Option      "Backlight"  "intel_backlight"
-EndSection
-```
-
-Sort the pacman mirrors
+Sort the pacman mirrors by speed
 https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors
 
 Update systemd-boot when systemd is upgraded. From:
@@ -426,14 +369,14 @@ https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method
 Screen locking with Google's
 
 `$ yay xsecurelock`
+Depends on my .xprofile, which I swiched to use xsecurelock
 
-Install xbacklight
-
-`# pacman -S xorg-xbacklight`
 
 Install xscreensaver
 
 `# pacman -S xscreensaver`
+
+## Setup the Linux Console
 
 Set a readable console font:
 
@@ -447,12 +390,17 @@ Then add 'consolefont' to the HOOKS section of /etc/mkinitcpio.conf and run:
 
 `# mkinitcpio -p linux`
 
+## Hibernate on Low Battery
+
 From: https://wiki.archlinux.org/index.php/Laptop#Touchpad
 Hibernate on low battery to '/etc/udev/rules.d/99-lowbat.rules'
 ```# Suspend the system when battery level drops to 5% or lower
 SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
 
 ```
+
+## Time Sync
+
 Setup time sync
 https://wiki.archlinux.org/index.php/Systemd-timesyncd
 Edit /etc/timesyncd.conf uncomment these lines:
@@ -463,6 +411,8 @@ FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org
 Then start it:
 
 `# timedatectl set-ntp true `
+
+## Configure the Trackpad
 
 Enable macOS like touch pad scrolling, tap to click (still debating if I want
 that) and two finger click for right click, three finger click for middle
@@ -561,20 +511,122 @@ Run mkinitcpio
 
 `# mkinitcpio -p linux`
 
-Get sound working
+## Make Sound Work
+
+This took some experimenting. At first all the speakers did't work
+and it sounded horrible.
+
+First I installed these packages
+
+`# pacman -S alsa-utils pulseaudio pulseaudio-alsa alsa-tools pavucontrol pulsemixer`
+
+
+Follow instructions at the bottom of this
+https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+But I also referenced these:
+https://imgur.com/a/N1xsCVZ
+https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/
+
+I ended up having to run `hdajackretask` as root from a terminal to get it
+to apply the configs properly. It creates `hda-jack-retask.conf`
+and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set Connectivity
+to Internal for both pins.  Once I did that, and rebooted, I was able
+to run puvacontrol and chose 'Analog Surround 4.0 Output' from the
+Configuration tab. And then on the Output Devices tab, I could unlock
+channels and verify that all 4 speakers were working, and control volume
+for each.
+
+## Make the Volume and Screen Brighness buttons work.
+Instructions generally came from:
+https://wiki.archlinux.org/index.php/Xbindkeys
+
+To set the backlight we need xbacklight
+
+`# pacman -S xorg-xbacklight`
+
+We'll need xbindkeys
 ```
-# pacman -S alas-utils pulseaudio pulseaudio-alsa
+# pacman -S xbindkeys
+$ xbindkeys -d > ~/.xbindkeysrc
 ```
+Add these to .xbindkeysrc:
+```
+# Increase volume
+"pactl set-sink-volume @DEFAULT_SINK@ +1000"
+   XF86AudioRaiseVolume
+
+# Decrease volume
+"pactl set-sink-volume @DEFAULT_SINK@ -1000"
+   XF86AudioLowerVolume
+
+# Mute volume
+"pactl set-sink-mute @DEFAULT_SINK@ toggle"
+   XF86AudioMute
+
+# Increase backlight
+"xbacklight -inc 10"
+   XF86MonBrightnessUp
+
+# Decrease backlight
+"xbacklight -dec 10"
+   XF86MonBrightnessDown
+```
+
+Make backlight changes work, create `/etc/X11/xorg.conf.d/20-intel.conf`
+with contents:
+```
+Section "Device"
+    Identifier  "Card0"
+    Driver      "intel"
+    Option      "Backlight"  "intel_backlight"
+EndSection
+```
+And then restart X or reboot.
+
+## Setup rEFInd
+
+`# pacman -S refind-efi parted sbsigntools imagemagick`
+
+# Install the theme we use
+`$ yay refind-theme-regular`
+
+Add a menu entry for Arch, and some theme configs
+not strictly necessary, but it makes the nice icons
+show up and gives us some submenus. Goes into `/boot/EFI/refind/refind.conf`
+
+```
+use_graphics_for linux
+...
+showtools shell, memtest, gdisk, mok_tool, about, shutdown, reboot, firmware, fwupdate
+...
+scanfor manual
+...
+menuentry "Arch Linux" {
+    icon     /EFI/refind/icons/os_arch.png
+    volume   "Arch Linux"
+    loader   /vmlinuz-linux
+    initrd   /initramfs-linux.img
+    options  "cryptdevice=UUID=1c7906a4-08a7-4b06-904c-535eb21cea57:lvm:allow-discards resume=/dev/mapper/archvg-swap root=/dev/mapper/archvg-root initrd=/intel-ucode.img rw quiet splash"
+    submenuentry "Boot using fallback initramfs" {
+        initrd /initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+}
+...
+include refind-theme-regular/theme.conf
+```
+I also decided I didn't like the bright white background of that theme, so I
+edited the theme config and swapped in an all black 32x32 pixel png for
+the background.
 
 Other packages I install:
 ```
 bc
 unzip
 mlocate
-python-dbus
 ```
-
-python-dbus is for the bumblebee status spotify plugin
 
 TODO
 * https://wiki.archlinux.org/index.php/Microcode#systemd-boot
@@ -582,9 +634,9 @@ TODO
 * https://bentley.link/secureboot/
 * https://wiki.archlinux.org/index.php/Secure_Boot
 * https://wiki.archlinux.org/index.php/HiDPI
-* Make screen brightness and volume keys work
 * Setup boot splash screen with arch logo
 * Switch to refind boot loader with a nice them
 * Make plymouth and slickgreeter have the same background for a consistent 
   boot experience
-* Make volume change work with bumbleeb-status or something
+* Setup Dunst or similar to show notifcations on volume and brightness change
+    https://wiki.archlinux.org/index.php/Dunst
