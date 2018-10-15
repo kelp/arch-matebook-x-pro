@@ -349,12 +349,64 @@ Install Nerd Fonts Complete, these are used by my terminal, required for my nvim
 
 `$ yay nerd-fonts-complete`
 
-Fix sound
+Fix sound, this took some experimenting. I installed these packages
 
-`# pacman -S alsa-tools`
+`# pacman -S alsa-tools pavucontrol pulsemixer`
 
-Follow instructions at the bottom of this:
+Follow instructions at the bottom of this
 https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+But I also referenced these:
+https://imgur.com/a/N1xsCVZ
+https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/
+
+I ended up having to run `hdajackretask` as root from a terminal to get it
+to apply the configs properly. It creates `hda-jack-retask.conf`
+and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set Connectivity
+to Internal for both pins.  Once I did that, and rebooted, I was able
+to run puvacontrol and chose 'Analog Surround 4.0 Output' from the
+Configuration tab. And then on the Output Devices tab, I could unlock
+channels and verify that all 4 speakers were working, and control volume
+for each.
+
+Make volume and screen brightness buttons work. Info from:
+https://wiki.archlinux.org/index.php/Xbindkeys
+
+```
+# pacman -S xbindkeys
+$ xbindkeys -d > ~/.xbindkeysrc
+```
+Add these to .xbindkeysrc:
+```
+# Increase volume
+"pactl set-sink-volume @DEFAULT_SINK@ +1000"
+   XF86AudioRaiseVolume
+
+# Decrease volume
+"pactl set-sink-volume @DEFAULT_SINK@ -1000"
+   XF86AudioLowerVolume
+
+# Mute volume
+"pactl set-sink-mute @DEFAULT_SINK@ toggle"
+   XF86AudioMute
+
+# Increase backlight
+"xbacklight -inc 10"
+   XF86MonBrightnessUp
+
+# Decrease backlight
+"xbacklight -dec 10"
+   XF86MonBrightnessDown
+```
+
+Make backlight changes work, create `/etc/X11/xorg.conf.d/20-intel.conf`
+with contents:
+```
+Section "Device"
+    Identifier  "Card0"
+    Driver      "intel"
+    Option      "Backlight"  "intel_backlight"
+EndSection
+```
 
 Sort the pacman mirrors
 https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors
@@ -519,7 +571,10 @@ Other packages I install:
 bc
 unzip
 mlocate
+python-dbus
 ```
+
+python-dbus is for the bumblebee status spotify plugin
 
 TODO
 * https://wiki.archlinux.org/index.php/Microcode#systemd-boot
