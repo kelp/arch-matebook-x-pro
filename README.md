@@ -539,7 +539,7 @@ Configuration tab. And then on the Output Devices tab, I could unlock
 channels and verify that all 4 speakers were working, and control volume
 for each.
 
-## Make the Volume and Screen Brighness buttons work.
+## Make the Volume and Screen Brighness Buttons Work
 Instructions generally came from:
 https://wiki.archlinux.org/index.php/Xbindkeys
 
@@ -590,7 +590,7 @@ And then restart X or reboot.
 
 `# pacman -S refind-efi parted sbsigntools imagemagick`
 
-# Install the theme we use
+# Install a Decent Theme
 `$ yay refind-theme-regular`
 
 Add a menu entry for Arch, and some theme configs
@@ -637,8 +637,6 @@ TODO
 * https://bentley.link/secureboot/
 * https://wiki.archlinux.org/index.php/Secure_Boot
 * https://wiki.archlinux.org/index.php/HiDPI
-* Setup boot splash screen with arch logo
-* Switch to refind boot loader with a nice them
 * Make plymouth and slickgreeter have the same background for a consistent 
   boot experience
 * Setup Dunst or similar to show notifcations on volume and brightness change
