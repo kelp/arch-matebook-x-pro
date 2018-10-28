@@ -640,7 +640,6 @@ mlocate
 ```
 
 TODO
-* https://wiki.archlinux.org/index.php/Microcode#systemd-boot
 * https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
 * https://bentley.link/secureboot/
 * https://wiki.archlinux.org/index.php/Secure_Boot
