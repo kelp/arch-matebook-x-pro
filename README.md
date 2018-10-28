@@ -414,35 +414,43 @@ Then start it:
 
 ## Configure the Trackpad
 
-Enable macOS like touch pad scrolling, tap to click (still debating if I want
-that) and two finger click for right click, three finger click for middle
-click / paste.
+## Configure Synaptics
+Info from: https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/
+I'm using Synamptics based on the recommendations from the above Blog Post.
+I was finding the trackpad behavior pretty annoying, given I spent most of my days
+on a Mac and have been using Macs for over a decade. Inspite of Synaptis limited support
+going forward, it seems to work better so far.
 
-`/etc/X11/xorg.conf.d/30-touchpad.conf`
+Here is how I configured it.
+
+```
+# pacman -S xf86-input-synaptics
+# cd /etc/X11/xorg.conf.d
+$ cp 30-touchpad.conf ~/40-libinput.conf
+# rm 30-touchpad.conf
+```
+
+Then I created /etc/X11/xorg.conf.d/30-synaptics.conf with these contents:
 ```
 Section "InputClass"
-    Identifier "touchpad"
-    Driver "libinput"
-    MatchIsTouchpad "on"
-    Option "NaturalScrolling" "true"
-    Option "Tapping" "on"
-    Option "AccelSpeed" "0.1"
-    Option "AccelProfile" "adaptive"
-    Option "ClickMethod" "clickfinger"
+        Identifier "touchpad catchall"
+        Driver "synaptics"
+        MatchIsTouchpad "on"
+        # Enabling tap-to-click is a perilous choice that begets needing to set up palm detection/ignoring. Since I am fine clicking my touchpad, I sidestep the issue by disabling tapping. 
+        Option "TapButton1" "0"
+        Option "TapButton2" "0"
+        Option "TapButton3" "0"
+	# Using negative values for ScrollDelta implements natural scroll, a la Macbook default. 
+        Option "VertScrollDelta" "-80"
+	Option "HorizScrollDelta" "-80"
+        # https://wiki.archlinux.org/index.php/Touchpad_Synaptics has a very buried note about this option
+	# tl;dr this defines right button to be rightmost 7% and bottommost 5%
+	Option "SoftButtonAreas" "93% 0 95% 0 0 0 0 0"  
+        MatchDevicePath "/dev/input/event*"
 EndSection
 ```
 
-Disable the Touch Screen (why would anyone want that?!)
-Create: `/etc/X11/xorg.conf.d`
-With contents:
-```
-Section "InputClass"
-    Identifier         "Touchscreen catchall"
-    MatchIsTouchscreen "on"
-
-    Option "Ignore" "on"
-EndSection
-```
+## Setup lightdm and slick-greeter
 
 Install lightdm-slick-greeter and lightdm-settings
 
