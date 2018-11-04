@@ -171,7 +171,7 @@ Set the timezone and hwclock
 
 ```
 # ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-# hwclokc --systohc
+# hwclock --systohc
 ```
 
 Setup Locales, uncomment any needed in /etc/locale.gen and generate
