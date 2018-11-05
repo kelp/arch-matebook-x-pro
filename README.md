@@ -407,7 +407,7 @@ Then add 'i915' to MODULES and 'consolefont' to the HOOKS section of
 ```
 MODULES=(i915 ext4)
 ...
-HOOKS=(base udev autodetect consolefont modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
+HOOKS=(base udev autodetect consolefont modconf block lvm2 resume filesystems keyboard fsck)
 ```
 And run: 
 `# mkinitcpio -p linux`
