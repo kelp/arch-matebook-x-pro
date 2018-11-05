@@ -320,6 +320,7 @@ Install X11, i3wm, lightdm, and a few other nice things
 # pacman -S lightdm lightdm-gtk-greeter termite
 # pacman -S firefox mesa xf86-video-intel
 # pacman -S network-manager-applet
+# pacman -S xbindkeys xorg-xmodmap xorg-xrdb
 ```
 
 Enable Bumblebee with bbswitch for Nvidia / Intel switching
@@ -331,7 +332,7 @@ Enable Bumblebee with bbswitch for Nvidia / Intel switching
 ## Neovim and Shell Setup
 
 ```
-# pacman -S neovim zsh python3
+# pacman -S neovim zsh python3 python-neovim
 ```
 ## Setup my dot files, includes x11, nvim and zsh configs
 Install my homshick setup https://github.com/kelp/dotfiles
@@ -417,28 +418,6 @@ briefly and then it will reset to the tiny ones.
 
 At this point I rebooted to test all this out.
 
-## Hibernate on Low Battery
-
-From: https://wiki.archlinux.org/index.php/Laptop#Touchpad
-Hibernate on low battery to '/etc/udev/rules.d/99-lowbat.rules'
-```# Suspend the system when battery level drops to 5% or lower
-SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
-
-```
-
-## Time Sync
-
-Setup time sync
-https://wiki.archlinux.org/index.php/Systemd-timesyncd
-Edit /etc/timesyncd.conf uncomment these lines:
-```
-NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
-FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org
-```
-Then start it:
-
-`# timedatectl set-ntp true `
-
 ## Configure the Trackpad
 
 ## Configure Synaptics
@@ -452,9 +431,6 @@ Here is how I configured it.
 
 ```
 # pacman -S xf86-input-synaptics
-# cd /etc/X11/xorg.conf.d
-$ cp 30-touchpad.conf ~/40-libinput.conf
-# rm 30-touchpad.conf
 ```
 
 Then I created /etc/X11/xorg.conf.d/30-synaptics.conf with these contents:
@@ -477,19 +453,45 @@ Section "InputClass"
 EndSection
 ```
 
+## Hibernate on Low Battery
+
+From: https://wiki.archlinux.org/index.php/Laptop#Touchpad
+Hibernate on low battery to '/etc/udev/rules.d/99-lowbat.rules'
+```# Suspend the system when battery level drops to 5% or lower
+SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
+
+```
+
+## Time Sync
+
+Setup time sync
+https://wiki.archlinux.org/index.php/Systemd-timesyncd
+Edit /etc/systemd/timesyncd.conf uncomment these lines:
+```
+NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
+FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org
+```
+Then start it:
+
+`# timedatectl set-ntp true `
+
+
 ## Setup lightdm and slick-greeter
 
 Install lightdm-slick-greeter and lightdm-settings
 
-`$ yay lightdm-slick-greeter lightdm-settings`
+```
+$ yay lightdm-slick-greeter 
+$ yay lightdm-settings
+```
 
-LightDM config:
+LightDM config '/etc/lighdm/lightdm.conf':
 ```
 [Seat:*]
 greeter-session=lightdm-slick-greeter
 ```
 
-Slick Greeter Config:
+Slick Greeter Config '/etc/lightdm/slick-greeter.conf:
 ```
 [Greeter]
 background = /usr/share/slick-greeter/arch-2560x1600.png
@@ -511,7 +513,10 @@ Make the 'Dynamic User' stop showing up on the login screen, by updating
 Setup Plymouth
 Following instructions from: https://wiki.archlinux.org/index.php/plymouth
 
-`$ yay plymouth` Select plymouth and plymouth-theme-arch-breeze-git
+```
+$ yay plymouth 
+$ yay plymouth-theme-arch-breeze-git
+```
 
 Set the theme in /etc/plymouth/plymouthd.conf
 
@@ -530,6 +535,7 @@ Disable lightdm systemd unit and enable the lightdm-plymouth unit.
 ```
 
 Install ttf-dejavu fonts, Plymouth needs this, mkinitcpio will fail without it
+
 `$ pacman -S ttf-dejavu`
 
 Add Plymouth requirements to /etc/mkinitcpio.conf. The plymouth-encrypt
@@ -537,7 +543,7 @@ is required when running disk encryption. I couldn't boot the first time through
 because I missed that.
 
 ```
-HOOKS=(base udev plymouth autodetect consolefont modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
+HOOKS=(base udev plymouth consolefont autodetect modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
 ```
 
 Run mkinitcpio
@@ -567,7 +573,7 @@ I ended up having to run `hdajackretask` as root from a terminal to get it
 to apply the configs properly. It creates `hda-jack-retask.conf`
 and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set Connectivity
 to Internal for both pins.  Once I did that, and rebooted, I was able
-to run puvacontrol and chose 'Analog Surround 4.0 Output' from the
+to run `pavucontrol` and chose 'Analog Surround 4.0 Output' from the
 Configuration tab. And then on the Output Devices tab, I could unlock
 channels and verify that all 4 speakers were working, and control volume
 for each.
@@ -619,20 +625,24 @@ EndSection
 ```
 And then restart X or reboot.
 
-https://wiki.archlinux.org/index.php/REFInd#Pacman_hook
 
 ## Install a Decent Theme for refind
 `$ yay refind-theme-regular`
 
 I also decided I didn't like the bright white background of that theme, so I
-edited the theme config and swapped in an all black 32x32 pixel png for
-the background.
+edited the theme config `/boot/EFI/refind/refind-theme-regular/theme.conf` 
+and swapped in an all black 32x32 pixel png for the background. I got the 
+image from here: https://dummyimage.com/32x32/000/000000
 
 Add to the bottom of `/boot/EFI/refind/refind.conf` to add a nice theme.
 
 ```
 include refind-theme-regular/theme.conf
 ```
+
+Get the pacman hook setup to install refind on the EFI partition on upgrade
+https://wiki.archlinux.org/index.php/REFInd#Pacman_hook
+
 
 Other packages I install:
 ```
