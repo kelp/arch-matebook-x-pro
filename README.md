@@ -21,7 +21,6 @@ Table of Contents
       * [Make Pacman faster](#make-pacman-faster)
       * [Setup the Linux Console](#setup-the-linux-console)
       * [Configure the Trackpad](#configure-the-trackpad)
-      * [Configure Synaptics](#configure-synaptics)
       * [Hibernate on Low Battery](#hibernate-on-low-battery)
       * [Time Sync](#time-sync)
       * [Setup lightdm and slick-greeter](#setup-lightdm-and-slick-greeter)
@@ -410,6 +409,7 @@ Install xscreensaver
 ## Start LightDM
 At this point X11 should work, and we can use it, though we'll still be tweaking
 a bunch of things.
+
 `# systemctl start lightdm`
 
 Now login to X11!
@@ -445,20 +445,21 @@ MODULES=(i915 ext4)
 HOOKS=(base udev autodetect consolefont modconf block lvm2 resume filesystems keyboard fsck)
 ```
 And run: 
+
 `# mkinitcpio -p linux`
 
 If i915 isn't added here, when you reboot, you'll see the new conole font
 briefly and then it will reset to the tiny ones.
 
-At this point I rebooted to test all this out.
+At this point I rebooted again to test all this out.
 
 ## Configure the Trackpad
 
-## Configure Synaptics
-Info from: https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/
-I'm using Synamptics based on the recommendations from the above Blog Post.
+Info from: [Linux with a Macbook Touchpad Feel, Pt 2]
+(https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/)
+I'm using Synamptics based on the recommendations from the above link.
 I was finding the trackpad behavior pretty annoying, given I spent most of my 
-days on a Mac and have been using Macs for over a decade. Inspite of Synaptis 
+days on a Mac and have been using Macs for over a decade. In spite of Synaptics 
 limited support going forward, it seems to work better so far.
 
 Here is how I configured it.
@@ -467,7 +468,7 @@ Here is how I configured it.
 # pacman -S xf86-input-synaptics
 ```
 
-Then I created /etc/X11/xorg.conf.d/30-synaptics.conf with these contents:
+Then I created `/etc/X11/xorg.conf.d/30-synaptics.conf` with these contents:
 ```
 Section "InputClass"
         Identifier "touchpad catchall"
@@ -519,13 +520,13 @@ $ yay lightdm-slick-greeter
 $ yay lightdm-settings
 ```
 
-LightDM config '/etc/lighdm/lightdm.conf':
+LightDM config `/etc/lighdm/lightdm.conf`:
 ```
 [Seat:*]
 greeter-session=lightdm-slick-greeter
 ```
 
-Slick Greeter Config '/etc/lightdm/slick-greeter.conf:
+Slick Greeter Config `/etc/lightdm/slick-greeter.conf`:
 ```
 [Greeter]
 background = /usr/share/slick-greeter/arch-2560x1600.png
@@ -545,7 +546,8 @@ Make the 'Dynamic User' stop showing up on the login screen, by updating
 `hidden-shells=/bin/false /usr/bin/nologin /sbin/nologin`
 
 Setup Plymouth
-Following instructions from: https://wiki.archlinux.org/index.php/plymouth
+Following instructions from: [Arch Wiki Plymouth Page]
+(https://wiki.archlinux.org/index.php/plymouth)
 
 ```
 $ yay plymouth 
