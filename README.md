@@ -137,7 +137,7 @@ Format the EFI/boot volume:
 ## Setup Disk Encryption
 I chose the realtively simple LVM on LUKS setup combining instructions from:
 [Encrypting_an_entire_system](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS)
-and found a few more hints at this [Gist](https://gist.github.com/heppu/6e58b7a174803bc4c43da99642b6094b)
+and found a few more hints at this [Gist](https://gist.github.com/heppu/6e58b7a174803bc4c43da99642b6094b).
 
 There will be a single LUKS2 volume with LVM on top. LVM will then divide
 that volume into root, home and swap.
