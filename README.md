@@ -224,19 +224,22 @@ we add to our boot loader config.
 
 `# pacman -S intel-ucode`
 
-Next setup rEFInd it's themable and looks much nicer than grub or 
+Next setup rEFInd, it's themable and looks much nicer than grub or 
 systemd-boot
 
-`# pacman -S refind-efi parted sbsigntools imagemagick`
-`# refind-install`
+```
+# pacman -S refind-efi parted sbsigntools imagemagick
+# refind-install
+```
 
-Add a menu entry for Arch, and some theme configs
-not strictly necessary, but it makes the nice icons
-show up and gives us some submenus. Goes into `/boot/EFI/refind/refind.conf`
+File the partition UUID below must be the UUID returned from running:
 
-The UUID below must be the UUID returned from running:
+`# blkid /dev/nvme0n1p2`
 
-`blkid /dev/nvme0n1p2`
+Add a menu entry for Arch, while not strictly necessary, it makes some nice 
+icons show up and gives us some submenus. 
+
+Plase this into `/boot/EFI/refind/refind.conf`
 
 ```
 use_graphics_for linux
@@ -260,7 +263,7 @@ menuentry "Arch Linux" {
 }
 ```
 
-Edit /etc/mkinitcpio.conf and add encrypt, lvm2, and resume support, the 
+Edit `/etc/mkinitcpio.conf` and add encrypt, lvm2, and resume support, the 
 postion in the HOOKS line matters:
 
 ```
@@ -270,7 +273,6 @@ MODULES=(ext4)
 ...
 HOOKS=(base udev autodetect modconf block encrypt lvm2 resume filesystems keyboard fsck)
 ```
-
 
 Regnerate initramfs
 
