@@ -1,3 +1,34 @@
+Table of Contents
+=================
+
+   * [Arch Install Notes](#arch-install-notes)
+      * [Getting Started](#getting-started)
+   * [Booting into the Base Install](#booting-into-the-base-install)
+      * [Make an Arch Boot USB Key](#make-an-arch-boot-usb-key)
+      * [Boot from USB](#boot-from-usb)
+      * [Make Fonts Readable and Get Online](#make-fonts-readable-and-get-online)
+      * [Partition and Format](#partition-and-format)
+      * [Setup Disk Encryption](#setup-disk-encryption)
+      * [Basic Configs for the New Install](#basic-configs-for-the-new-install)
+      * [Make the system bootable](#make-the-system-bootable)
+   * [Post Install Config](#post-install-config)
+      * [Create a regular user](#create-a-regular-user)
+      * [Setup power savings](#setup-power-savings)
+      * [Get X11 Working](#get-x11-working)
+      * [Neovim and Shell Setup](#neovim-and-shell-setup)
+      * [Setup my dot files, includes x11, nvim and zsh configs](#setup-my-dot-files-includes-x11-nvim-and-zsh-configs)
+      * [Start LightDM](#start-lightdm)
+      * [Make Pacman faster](#make-pacman-faster)
+      * [Setup the Linux Console](#setup-the-linux-console)
+      * [Configure the Trackpad](#configure-the-trackpad)
+      * [Configure Synaptics](#configure-synaptics)
+      * [Hibernate on Low Battery](#hibernate-on-low-battery)
+      * [Time Sync](#time-sync)
+      * [Setup lightdm and slick-greeter](#setup-lightdm-and-slick-greeter)
+      * [Make Sound Work](#make-sound-work)
+      * [Make the Volume and Screen Brighness Buttons Work](#make-the-volume-and-screen-brighness-buttons-work)
+      * [Install a Decent Theme for refind](#install-a-decent-theme-for-refind)
+
 # Arch Install Notes
 Installing Arch on the Huawei MateBook Pro X with Disk Encryption.
 
