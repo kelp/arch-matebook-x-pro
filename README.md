@@ -232,7 +232,7 @@ systemd-boot
 # refind-install
 ```
 
-File the partition UUID below must be the UUID returned from running:
+Get the encrypted volume UUID for use in the rEFInd config.
 
 `# blkid /dev/nvme0n1p2`
 
@@ -278,7 +278,7 @@ Regnerate initramfs
 
 `# mkinitcpio -p linux `
 
-Install some packages so wifi-menu works later
+Install some packages so `wifi-menu` works after reboot.
 
 `# pacman -S dialog wpa_supplicant`
 
@@ -295,7 +295,7 @@ Reboot
 
 # Post Install Config
 
-Get wifi back online after first boot. Will change how this is configured
+Get wifi back online after first boot. We'll change how this is configured
 later.
 
 `# wifi-menu`
@@ -314,7 +314,7 @@ Install and setup etckeeper
 # passwd kelp
 ```
 
-Then I log out and switch to that user.
+Then log out and switch to that user.
 
 ## Setup power saving
 
@@ -328,17 +328,18 @@ Enable TLP for powersaving
 # systemctl enable NetworkManager-dispatcher.service
 ```
 
-Install ethtool lsb-release and smartmontools at the suggestion of tlp-stat
+Install ethtool, lsb-release and smartmontools at the suggestion of tlp-stat
 
 `# pacman -S ethtool lsb-release smartmontools`
 
-Get the Network to come up automatically
+Get networking to come up automatically
 ```
 # systemctl start NetworkManager.service
-$ nmcli device wifi connect <Network> password <password>
+$ nmcli device wifi connect '<Network>' password <password>
 ```
 
-Install ssh so I can update this README from the MateBook
+Install ssh so I can update this README from the MateBook.
+(git is also required, but etckeeper pulled that in)
 ```
 # pacman -S openssh
 ```
