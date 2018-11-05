@@ -13,7 +13,7 @@ Table of Contents
       * [Make the system bootable](#make-the-system-bootable)
    * [Post Install Config](#post-install-config)
       * [Create a regular user](#create-a-regular-user)
-      * [Setup power savings](#setup-power-savings)
+      * [Setup power saving](#setup-power-saving)
       * [Get X11 Working](#get-x11-working)
       * [Neovim and Shell Setup](#neovim-and-shell-setup)
       * [Setup my dot files, includes x11, nvim and zsh configs](#setup-my-dot-files-includes-x11-nvim-and-zsh-configs)
@@ -314,7 +314,7 @@ Install and setup etckeeper
 
 Then I log out and switch to that user.
 
-## Setup power savings
+## Setup power saving
 
 Enable TLP for powersaving
 ```
