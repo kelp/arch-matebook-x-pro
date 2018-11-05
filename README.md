@@ -489,7 +489,7 @@ EndSection
 
 ## Hibernate on Low Battery
 
-From: https://wiki.archlinux.org/index.php/Laptop#Touchpad
+From: [Arch Wiki Touchpad](https://wiki.archlinux.org/index.php/Laptop#Touchpad)
 Hibernate on low battery to '/etc/udev/rules.d/99-lowbat.rules'
 ```# Suspend the system when battery level drops to 5% or lower
 SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
@@ -499,7 +499,7 @@ SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]",
 ## Time Sync
 
 Setup time sync
-https://wiki.archlinux.org/index.php/Systemd-timesyncd
+[Arch Wiki Systemd-timesyncd](https://wiki.archlinux.org/index.php/Systemd-timesyncd)
 Edit /etc/systemd/timesyncd.conf uncomment these lines:
 ```
 NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
@@ -540,7 +540,7 @@ draw-user-backgrounds = false
 ```
 
 Make the 'Dynamic User' stop showing up on the login screen, by updating
-/etc/lightdm/users.conf to exclude users with /sbin/nologin as their shell
+`/etc/lightdm/users.conf` to exclude users with `/sbin/nologin` as their shell
 
 `hidden-shells=/bin/false /usr/bin/nologin /sbin/nologin`
 
@@ -552,7 +552,7 @@ $ yay plymouth
 $ yay plymouth-theme-arch-breeze-git
 ```
 
-Set the theme in /etc/plymouth/plymouthd.conf
+Set the theme in `/etc/plymouth/plymouthd.conf`
 
 ```
 [Daemon]
@@ -572,7 +572,7 @@ Install ttf-dejavu fonts, Plymouth needs this, mkinitcpio will fail without it
 
 `$ pacman -S ttf-dejavu`
 
-Add Plymouth requirements to /etc/mkinitcpio.conf. The plymouth-encrypt
+Add Plymouth requirements to `/etc/mkinitcpio.conf`. The plymouth-encrypt
 is required when running disk encryption. I couldn't boot the first time through
 because I missed that.
 
