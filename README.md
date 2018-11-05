@@ -24,8 +24,8 @@ I burned it to a [UBS Key](https://wiki.archlinux.org/index.php/USB_flash_instal
 on macOS like this:
 
 ```
-diskutil unmountDisk /dev/disk2
-sudo dd if=archlinux-2018.10.01-x86_64.iso of=/dev/rdisk2 bs=1m
+$ diskutil unmountDisk /dev/disk2
+$ sudo dd if=archlinux-2018.10.01-x86_64.iso of=/dev/rdisk2 bs=1m
 ```
 ## Boot from USB
 
@@ -52,14 +52,14 @@ later:
 
 `# setfont latarcyrheb-sun32`
 
-Following the [Arch Install Guide](https://wiki.archlinux.org/index.php/Installation_guide)
+Most of this next part is from the [Arch Install Guide](https://wiki.archlinux.org/index.php/Installation_guide)
 
-To Get WiFi Working again, chose the wireless network. We'll change
+To Get WiFi working chose the wireless network. We'll change
 how this is configured later, but this works for now.
 
 `# wifi-menu` 
 
-Check that it works:
+Check that it works, it may take a few seconds for netowrking to come up.
 
 `# ping archlinux.org`
 
@@ -68,8 +68,9 @@ Update the system clock
 `# timedatectl set-ntp true`
 
 ## Partition and Format
-I used cfdisk to delete all existing partitions from /dev/nvme0n1, 
-removing Windows 10. All operations from here on are done on /dev/nvme0n1.
+
+First we wipe the drive, this will destroy any existing data and partitions,
+overwriting all data with randomness.
 
 This install will use full disk encryption, with the exception of the EFI
 boot partition. 
@@ -89,17 +90,16 @@ disk since this is an encrypted drive.
 
 This took about 20 minutes to run.
 
-Some debate about effectiveness of this with SSDs, but this can't be
-worse than not doing it, also my system was completely new, so I had no
-private data.
-
 Close the temporary container
 
 `# cryptsetup close to_be_wiped`
 
 Partition and create a 512MB fat32 partition of type 'EFI System'. 
-I used cfdisk to create the parition. I made the rest of the disk type 'Linux 
-filesystem'.  Then formatted it:
+I used cfdisk to create the parition. I made a 220GB partition 
+with type 'Linux filesystem' for Arch. The rest will be reserved for future
+OS installs.
+
+Format the EFI/boot volume:
 
 `# mkfs.fat -F32 /dev/nvme0n1`
 
@@ -178,7 +178,7 @@ Setup Locales, uncomment any needed in /etc/locale.gen and generate
 them
 
 ```
-# locale-gen`
+# locale-gen
 # echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 ```
 
@@ -186,12 +186,51 @@ Set a hostname
 
 `# echo archbook >> /etc/hostname`
 
-Install the systemd-boot boot loader. I'm using this because it's simple
-to setup and configure.
+## Make the system bootable
 
-`# bootctl --path=/boot install`
+Install Intel Microcode Updates, this will install an initrd image that 
+we add to our boot loader config.
 
-Edit /etc/mkinitcpio.conf
+`# pacman -S intel-ucode`
+
+Next setup rEFInd it's themable and looks much nicer than grub or 
+systemd-boot
+
+`# pacman -S refind-efi parted sbsigntools imagemagick`
+`# refind-install`
+
+Add a menu entry for Arch, and some theme configs
+not strictly necessary, but it makes the nice icons
+show up and gives us some submenus. Goes into `/boot/EFI/refind/refind.conf`
+
+The UUID below must be the UUID returned from running:
+
+`blkid /dev/nvme0n1p2`
+
+```
+use_graphics_for linux
+...
+showtools shell, memtest, gdisk, mok_tool, about, shutdown, reboot, firmware, fwupdate
+...
+scanfor manual
+...
+menuentry "Arch Linux" {
+    icon     /EFI/refind/icons/os_arch.png
+    volume   "Arch Linux"
+    loader   /vmlinuz-linux
+    initrd   /initramfs-linux.img
+    options  "cryptdevice=UUID=<YOUR-PARTITION-UUID>:lvm:allow-discards resume=/dev/mapper/archvg-swap root=/dev/mapper/archvg-root initrd=/intel-ucode.img rw quiet splash"
+    submenuentry "Boot using fallback initramfs" {
+        initrd /initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+}
+```
+
+Edit /etc/mkinitcpio.conf and add encrypt, lvm2, and resume support, the 
+postion in the HOOKS line matters:
 
 ```
 MODULES=(ext4)
@@ -199,29 +238,6 @@ MODULES=(ext4)
 ...
 ...
 HOOKS=(base udev autodetect modconf block encrypt lvm2 resume filesystems keyboard fsck)
-```
-
-Install Intel Microcode Updates, this will install an initrd image that 
-we add to our boot loader config.
-
-`# pacman -S intel-ucode`
-
-Create /boot/loader/entries/arch.conf
-
-```
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd /intel-ucode.img
-initrd  /initramfs-linux.img
-options cryptdevice=UUID=<YOUR-PARTITION-UUID>:lvm:allow-discards resume=/dev/mapper/archvg-swap root=/dev/mapper/archvg-root rw quiet
-```
-
-Edit /boot/loader/loader.conf
-
-```
-timeout 0
-default arch
-editor 0
 ```
 
 
@@ -251,22 +267,6 @@ later.
 
 `# wifi-menu`
 
-
-## Get X11 Working
-
-Install X11 and the i3 window manager
-```
-# pacman -S i3 nvidia xorg-server xorg-font-util xorg-fonts-75dpi \
-# xorg-fonts-100dpi xorg-mkfontdir xorg-mkfontscale xorg-xdpyinfo \
-# xorg-xrandr xorg-xset bumblebee bbswitch
-```
-
-Enable Bumblebee with bbswitch for Nvidia / Intel switching
-```
-# systemctl enable bumblebeed.service
-# gpasswd -a $USER bumblebee
-```
-
 Install and setup etckeeper
 ```
 # pacman -S etckeeper
@@ -274,6 +274,16 @@ Install and setup etckeeper
 # etckeeper init
 # etckeeper commit
 ```
+
+## Create a regular user
+```
+# useradd -G wheel -m kelp
+# passwd kelp
+```
+
+Then I log out and switch to that user.
+
+## Setup power savings
 
 Enable TLP for powersaving
 ```
@@ -285,42 +295,46 @@ Enable TLP for powersaving
 # systemctl enable NetworkManager-dispatcher.service
 ```
 
-Install ethtool and smartmontools at the suggestion of tlp-stat
+Install ethtool lsb-release and smartmontools at the suggestion of tlp-stat
 
-`sudo pacman -S ethtool smartmontools`
-
-Get X11 running
-```
-# pacman -S lightdm
-# pacman -S lightdm-gtk-greeter
-# pacman -S termite
-# pacman -S firefox
-# pacman -S mesa
-# pacman -S xf86-video-intel
-```
+`# pacman -S ethtool lsb-release smartmontools`
 
 Get the Network to come up automatically
 ```
+# systemctl start NetworkManager.service
 $ nmcli device wifi connect <Network> password <password>
+```
+
+Install ssh so I can update this README from the MateBook
+```
+# pacman -S openssh
+```
+
+## Get X11 Working
+
+Install X11, i3wm, lightdm, and a few other nice things
+```
+# pacman -S i3 nvidia xorg-server xorg-font-util xorg-fonts-75dpi 
+# pacman -S xorg-fonts-100dpi xorg-mkfontdir xorg-mkfontscale xorg-xdpyinfo 
+# pacman -S xorg-xrandr xorg-xset bumblebee bbswitch
+# pacman -S lightdm lightdm-gtk-greeter termite
+# pacman -S firefox mesa xf86-video-intel
 # pacman -S network-manager-applet
 ```
 
-Install git and ssh so I can update this README from the MateBook
+Enable Bumblebee with bbswitch for Nvidia / Intel switching
 ```
-pacman -S git
-pacman -S openssh
+# systemctl enable bumblebeed.service
+# gpasswd -a $USER bumblebee
 ```
 
 ## Neovim and Shell Setup
 
 ```
-pacman -S nvim
-pacman -S neovim
-pacman -S zsh
-pacman -S python3
+# pacman -S neovim zsh python3
 ```
-
-Install my homshick setup, bootstrap of oh-my-zsh needs some automation.
+## Setup my dot files, includes x11, nvim and zsh configs
+Install my homshick setup https://github.com/kelp/dotfiles
 
 Install YaY to build packages from Arch AUR
 
@@ -330,14 +344,12 @@ $ cd yay
 $ makepkg -si
 ```
 
-Install things needed for my custom i3 setup
+Install things needed for my custom i3 setup. For bumblebee-status
+I use the git version because it has a bug fix I sent upstream.
 
 ```
 $ yay bumblebee-status
-# pacman -S dmenu
-# pacman -S feh
-# pacman -S pacman-contrib
-# pacman -S python-dbus
+# pacman -S dmenu feh pacman-contrib python-dbus
 ```
 
 A few more things to make X happy.
@@ -346,18 +358,31 @@ A few more things to make X happy.
 
 Redshift configs come from https://github.com/kelp/redshift 
 
-Install Nerd Fonts Complete, these are used by my terminal, required for my nvim and shell config
+Install Nerd Fonts Complete, these are used by my terminal, required for my 
+nvim and shell config
 
 `$ yay nerd-fonts-complete`
 
+Screen locking with Google's
+
+`$ yay xsecurelock`
+Depends on my .xprofile, which I swiched to use xsecurelock
+
+Install xscreensaver
+
+`# pacman -S xscreensaver`
+
+## Start LightDM
+At this point X11 should work, and we can use it, though we'll still be tweaking
+a bunch of things.
+`# systemctl start lightdm`
+
+Now login to X11!
+
+## Make Pacman faster
 
 Sort the pacman mirrors by speed
 https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors
-
-Update systemd-boot when systemd is upgraded. From:
-https://wiki.archlinux.org/index.php/Systemd-boot#Automatic_update
-
-`$ yay systemd-boot-pacman-hook`
 
 Install gnome-keyring to manage ssh keys
 
@@ -366,15 +391,6 @@ Install gnome-keyring to manage ssh keys
 Set it up with the PAM method for console. LightDM should handle it for X11
 https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method
 
-Screen locking with Google's
-
-`$ yay xsecurelock`
-Depends on my .xprofile, which I swiched to use xsecurelock
-
-
-Install xscreensaver
-
-`# pacman -S xscreensaver`
 
 ## Setup the Linux Console
 
@@ -382,13 +398,24 @@ Set a readable console font:
 
 `# pacman -S terminus-font`
 
-Create `/etc/vconso-e.conf` with contents:
+Create `/etc/vconsole.conf` with contents:
 
 `FONT=ter-132n`
 
-Then add 'consolefont' to the HOOKS section of /etc/mkinitcpio.conf and run:
-
+Then add 'i915' to MODULES and 'consolefont' to the HOOKS section of 
+/etc/mkinitcpio.conf:
+```
+MODULES=(i915 ext4)
+...
+HOOKS=(base udev autodetect consolefont modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
+```
+And run: 
 `# mkinitcpio -p linux`
+
+If i915 isn't added here, when you reboot, you'll see the new conole font
+briefly and then it will reset to the tiny ones.
+
+At this point I rebooted to test all this out.
 
 ## Hibernate on Low Battery
 
@@ -417,9 +444,9 @@ Then start it:
 ## Configure Synaptics
 Info from: https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/
 I'm using Synamptics based on the recommendations from the above Blog Post.
-I was finding the trackpad behavior pretty annoying, given I spent most of my days
-on a Mac and have been using Macs for over a decade. Inspite of Synaptis limited support
-going forward, it seems to work better so far.
+I was finding the trackpad behavior pretty annoying, given I spent most of my 
+days on a Mac and have been using Macs for over a decade. Inspite of Synaptis 
+limited support going forward, it seems to work better so far.
 
 Here is how I configured it.
 
@@ -510,8 +537,6 @@ is required when running disk encryption. I couldn't boot the first time through
 because I missed that.
 
 ```
-MODULES=(i915 ext4)
-...
 HOOKS=(base udev plymouth autodetect consolefont modconf block plymouth-encrypt lvm2 resume filesystems keyboard fsck)
 ```
 
@@ -594,43 +619,20 @@ EndSection
 ```
 And then restart X or reboot.
 
-## Setup rEFInd
+https://wiki.archlinux.org/index.php/REFInd#Pacman_hook
 
-`# pacman -S refind-efi parted sbsigntools imagemagick`
-
-# Install a Decent Theme
+## Install a Decent Theme for refind
 `$ yay refind-theme-regular`
 
-Add a menu entry for Arch, and some theme configs
-not strictly necessary, but it makes the nice icons
-show up and gives us some submenus. Goes into `/boot/EFI/refind/refind.conf`
-
-```
-use_graphics_for linux
-...
-showtools shell, memtest, gdisk, mok_tool, about, shutdown, reboot, firmware, fwupdate
-...
-scanfor manual
-...
-menuentry "Arch Linux" {
-    icon     /EFI/refind/icons/os_arch.png
-    volume   "Arch Linux"
-    loader   /vmlinuz-linux
-    initrd   /initramfs-linux.img
-    options  "cryptdevice=UUID=1c7906a4-08a7-4b06-904c-535eb21cea57:lvm:allow-discards resume=/dev/mapper/archvg-swap root=/dev/mapper/archvg-root initrd=/intel-ucode.img rw quiet splash"
-    submenuentry "Boot using fallback initramfs" {
-        initrd /initramfs-linux-fallback.img
-    }
-    submenuentry "Boot to terminal" {
-        add_options "systemd.unit=multi-user.target"
-    }
-}
-...
-include refind-theme-regular/theme.conf
-```
 I also decided I didn't like the bright white background of that theme, so I
 edited the theme config and swapped in an all black 32x32 pixel png for
 the background.
+
+Add to the bottom of `/boot/EFI/refind/refind.conf` to add a nice theme.
+
+```
+include refind-theme-regular/theme.conf
+```
 
 Other packages I install:
 ```
