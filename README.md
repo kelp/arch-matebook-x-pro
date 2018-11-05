@@ -370,7 +370,7 @@ Enable Bumblebee with bbswitch for Nvidia / Intel switching
 # pacman -S neovim zsh python3 python-neovim
 ```
 ## Setup my dot files, includes x11, nvim and zsh configs
-Install my homshick setup https://github.com/kelp/dotfiles
+Install my homshick setup [github.com/kelp/dotfiles](https://github.com/kelp/dotfiles)
 
 Install YaY to build packages from Arch AUR
 
@@ -392,7 +392,7 @@ A few more things to make X happy.
 
 `# pacman -S xss-lock compton redshift`
 
-Redshift configs come from https://github.com/kelp/redshift 
+Redshift configs come from [github.com/kelp/redshift](https://github.com/kelp/redshift)
 
 Install Nerd Fonts Complete, these are used by my terminal, required for my 
 nvim and shell config
@@ -419,14 +419,14 @@ Now login to X11!
 ## Make Pacman faster
 
 Sort the pacman mirrors by speed
-https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors
+[Arch Wiki Sorting Mirrors](https://wiki.archlinux.org/index.php/mirrors#Sorting_mirrors)
 
 Install gnome-keyring to manage ssh keys
 
 `# pacman -S gnome-keyring`
 
 Set it up with the PAM method for console. LightDM should handle it for X11
-https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method
+[Arch Wiki Gnome Keyring](https://wiki.archlinux.org/index.php/GNOME/Keyring#PAM_method)
 
 
 ## Setup the Linux Console
@@ -502,7 +502,7 @@ SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]",
 
 Setup time sync
 [Arch Wiki Systemd-timesyncd](https://wiki.archlinux.org/index.php/Systemd-timesyncd)
-Edit /etc/systemd/timesyncd.conf uncomment these lines:
+Edit `/etc/systemd/timesyncd.conf` uncomment these lines:
 ```
 NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
 FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org
@@ -676,7 +676,7 @@ include refind-theme-regular/theme.conf
 ```
 
 Get the pacman hook setup to install refind on the EFI partition on upgrade
-https://wiki.archlinux.org/index.php/REFInd#Pacman_hook
+follow the [Arch Wiki reFIND Pacman Hook](https://wiki.archlinux.org/index.php/REFInd#Pacman_hook)
 
 ## Other Packages
 
