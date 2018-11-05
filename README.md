@@ -27,6 +27,8 @@ Table of Contents
       * [Make Sound Work](#make-sound-work)
       * [Make the Volume and Screen Brighness Buttons Work](#make-the-volume-and-screen-brighness-buttons-work)
       * [Install a Decent Theme for refind](#install-a-decent-theme-for-refind)
+      * [Other Packages](#other-packages)
+      * [TODO](#todo)
 
 # Arch Install Notes
 Installing Arch on the Huawei MateBook Pro X with Disk Encryption.
@@ -42,7 +44,7 @@ I booted into Windows 10 once, and let it go through it's whole setup
 only so I could update the BIOS.
 
 Mine shipped with BIOS version 1.17, and I noticed 1.18 was available
-on the [Huawei Download Page](ttps://consumer.huawei.com/us/support/pc/matebook-x-pro/) 
+on the [Huawei Download Page](https://consumer.huawei.com/us/support/pc/matebook-x-pro/) 
 so I installed that from Windows 10, before booting from the Arch ISO.
 
 # Booting into the Base Install
@@ -545,7 +547,7 @@ Make the 'Dynamic User' stop showing up on the login screen, by updating
 `hidden-shells=/bin/false /usr/bin/nologin /sbin/nologin`
 
 Setup Plymouth
-Following instructions from: [Arch Wiki Plymouth Page](https://wiki.archlinux.org/index.php/plymouth)
+Following instructions from [Arch Wiki Plymouth](https://wiki.archlinux.org/index.php/plymouth)
 
 ```
 $ yay plymouth 
@@ -586,35 +588,30 @@ Run mkinitcpio
 
 ## Make Sound Work
 
-This took some experimenting. At first all the speakers did't work
+This took some experimenting. At first all the speakers didn't work
 and it sounded horrible.
 
 First I installed these packages
 
 `# pacman -S alsa-utils pulseaudio pulseaudio-alsa alsa-tools pavucontrol pulsemixer`
 
+Then followed instructions at the bottom of [Ayman Bagabas Blog](https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html)
 
-Follow instructions at the bottom of this
-
-https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
-
-But I also referenced these:
-https://imgur.com/a/N1xsCVZ
-
-https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/
+I also referenced this [imgur](https://imgur.com/a/N1xsCVZ) and
+this [Reddit Thread](https://www.reddit.com/r/MatebookXPro/comments/8z4pv7/fix_for_the_2_out_of_4_speakers_issue_on_linux/)
 
 I ended up having to run `hdajackretask` as root from a terminal to get it
 to apply the configs properly. It creates `hda-jack-retask.conf`
-and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set Connectivity
-to Internal for both pins.  Once I did that, and rebooted, I was able
+and `/usr/lib/firmware/hda-jack-retask.fw`. I also had to set 'Connectivity'
+to 'Internal' for both pins.  Once I did that, and rebooted, I was able
 to run `pavucontrol` and chose 'Analog Surround 4.0 Output' from the
 Configuration tab. And then on the Output Devices tab, I could unlock
 channels and verify that all 4 speakers were working, and control volume
 for each.
 
 ## Make the Volume and Screen Brighness Buttons Work
-Instructions generally came from:
-https://wiki.archlinux.org/index.php/Xbindkeys
+Instructions generally came from 
+[Arch Wiki Xbindkeys](https://wiki.archlinux.org/index.php/Xbindkeys)
 
 To set the backlight we need xbacklight
 
@@ -625,7 +622,11 @@ We'll need xbindkeys
 # pacman -S xbindkeys
 $ xbindkeys -d > ~/.xbindkeysrc
 ```
-Add these to .xbindkeysrc:
+
+This is pulled in from my homeshick x11 castle, but
+documenting it here for others.
+
+Add these to `$HOME/.xbindkeysrc`:
 ```
 # Increase volume
 "pactl set-sink-volume @DEFAULT_SINK@ +1000"
@@ -660,15 +661,15 @@ EndSection
 And then restart X or reboot.
 
 
-## Install a Decent Theme for refind
+## Install a Decent Theme for rEFInd
 `$ yay refind-theme-regular`
 
 I also decided I didn't like the bright white background of that theme, so I
 edited the theme config `/boot/EFI/refind/refind-theme-regular/theme.conf` 
 and swapped in an all black 32x32 pixel png for the background. I got the 
-image from here: https://dummyimage.com/32x32/000/000000
+image from [dummyimage](https://dummyimage.com/32x32/000/000000)
 
-Add to the bottom of `/boot/EFI/refind/refind.conf` to add a nice theme.
+Add the theme config to the bottom of `/boot/EFI/refind/refind.conf`
 
 ```
 include refind-theme-regular/theme.conf
@@ -677,16 +678,16 @@ include refind-theme-regular/theme.conf
 Get the pacman hook setup to install refind on the EFI partition on upgrade
 https://wiki.archlinux.org/index.php/REFInd#Pacman_hook
 
+## Other Packages
 
 Other packages I install:
 ```
-bc
-unzip
-mlocate
+# pacman -S bc unzip mlocate
 ```
 
-TODO
-* https://aymanbagabas.com/2018/07/23/archlinux-on-matebook-x-pro.html
+And that's it! (aside from a few TODOs I met get to below)
+
+## TODO
 * https://bentley.link/secureboot/
 * https://wiki.archlinux.org/index.php/Secure_Boot
 * https://wiki.archlinux.org/index.php/HiDPI
