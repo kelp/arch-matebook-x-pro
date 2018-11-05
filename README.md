@@ -35,8 +35,8 @@ Installing Arch on the Huawei MateBook Pro X with Disk Encryption.
 This was done with a new Huawei MateBook Pro X Intel Core i7-8550U 
 1.8GHz, 16GB RAM, 512GB SSD. Delivered on 2018/10/08.
 
-This is still very much a WIP, as I go through the install, tweaking things
-and improving the doc for consistancy and readabilty.
+I've run through this install twice now, and updated/reorganized
+this document a bit on the second pass.
 
 ## Getting Started
 I booted into Windows 10 once, and let it go through it's whole setup
@@ -78,19 +78,19 @@ Hold down F12 at boot to enter the boot menu
 
 ## Make Fonts Readable and Get Online
 
-Make the console font larger so it's readable, we'll set a permenant font 
+Make the console font larger so it's readable, we'll set a permanent font 
 later:
 
 `# setfont latarcyrheb-sun32`
 
 Most of this next part is from the [Arch Install Guide](https://wiki.archlinux.org/index.php/Installation_guide)
 
-To Get WiFi working chose the wireless network. We'll change
+To get WiFi working chose the wireless network. We'll change
 how this is configured later, but this works for now.
 
 `# wifi-menu` 
 
-Check that it works, it may take a few seconds for netowrking to come up.
+Check that it works, it may take a few seconds for networking to come up.
 
 `# ping archlinux.org`
 
@@ -114,7 +114,7 @@ Verify that the new device exists:
 
 `$ lsblk`
 
-Now wipe it with Zeros, which should be turned into apparent randomness on
+Now wipe it with zeros, which should be turned into apparent randomness on
 disk since this is an encrypted drive.
 
 `# dd if=/dev/zero of=/dev/mapper/to_be_wiped bs=1M status=progress`
@@ -136,8 +136,8 @@ Format the EFI/boot volume:
 
 ## Setup Disk Encryption
 I chose the realtively simple LVM on LUKS setup combining instructions from:
-https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS
-https://gist.github.com/heppu/6e58b7a174803bc4c43da99642b6094b
+[Encrypting_an_entire_system](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS)
+and found a few more hints at this [Gist](https://gist.github.com/heppu/6e58b7a174803bc4c43da99642b6094b)
 
 There will be a single LUKS2 volume with LVM on top. LVM will then divide
 that volume into root, home and swap.
