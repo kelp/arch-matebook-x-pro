@@ -455,8 +455,7 @@ At this point I rebooted again to test all this out.
 
 ## Configure the Trackpad
 
-Info from: [Linux with a Macbook Touchpad Feel, Pt 2]
-(https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/)
+Info from: [Linux with a Macbook Touchpad Feel, Pt 2](https://williambharding.com/blog/linux-to-macbook/linux-with-a-macbook-touchpad-feel-pt-2/)
 I'm using Synamptics based on the recommendations from the above link.
 I was finding the trackpad behavior pretty annoying, given I spent most of my 
 days on a Mac and have been using Macs for over a decade. In spite of Synaptics 
@@ -546,8 +545,7 @@ Make the 'Dynamic User' stop showing up on the login screen, by updating
 `hidden-shells=/bin/false /usr/bin/nologin /sbin/nologin`
 
 Setup Plymouth
-Following instructions from: [Arch Wiki Plymouth Page]
-(https://wiki.archlinux.org/index.php/plymouth)
+Following instructions from: [Arch Wiki Plymouth Page](https://wiki.archlinux.org/index.php/plymouth)
 
 ```
 $ yay plymouth 
