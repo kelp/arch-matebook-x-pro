@@ -692,7 +692,7 @@ autocutsel -selection PRIMARY -fork &
 
 Other packages I install:
 ```
-# pacman -S bc unzip mlocate
+# pacman -S bc unzip mlocate perl-anyevent-i3
 ```
 
 And that's it! (aside from a few TODOs I met get to below)
