@@ -27,6 +27,7 @@ Table of Contents
       * [Make Sound Work](#make-sound-work)
       * [Make the Volume and Screen Brighness Buttons Work](#make-the-volume-and-screen-brighness-buttons-work)
       * [Install a Decent Theme for refind](#install-a-decent-theme-for-refind)
+      * [Clipbard Manager](#clipboard-manager)
       * [Other Packages](#other-packages)
       * [TODO](#todo)
 
@@ -675,8 +676,17 @@ Add the theme config to the bottom of `/boot/EFI/refind/refind.conf`
 include refind-theme-regular/theme.conf
 ```
 
-Get the pacman hook setup to install refind on the EFI partition on upgrade
+Get the pacman hook setup to install rEFInd on the EFI partition on upgrade
 follow the [Arch Wiki reFIND Pacman Hook](https://wiki.archlinux.org/index.php/REFInd#Pacman_hook)
+
+## Clipboard Manager
+`# pacman -S autocutsel`
+
+And I added the following to my `.xprofile`
+```
+autocutsel -fork &
+autocutsel -selection PRIMARY -fork &
+```
 
 ## Other Packages
 
