@@ -40,6 +40,8 @@ This was done with a new Huawei MateBook Pro X Intel Core i7-8550U
 I've run through this install twice now, and updated/reorganized
 this document a bit on the second pass.
 
+Any feedback is greatly appreciated and can be provided with a PR or a by creating a new [Issue](https://github.com/kelp/arch-matebook-x-pro/issues).
+
 ## Getting Started
 I booted into Windows 10 once, and let it go through it's whole setup
 only so I could update the BIOS.
