@@ -707,3 +707,8 @@ And that's it! (aside from a few TODOs I met get to below)
   boot experience
 * Setup Dunst or similar to show notifcations on volume and brightness change
     https://wiki.archlinux.org/index.php/Dunst
+* Switch 'make pacman faster' section over to using 'reflector'
+* Document process of making my new laser printer work
+* Fish configs
+* gpg agent forwarding
+* change autocutsel documentation, I don't use it anymore.
